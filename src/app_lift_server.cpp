@@ -5,8 +5,6 @@
 
 using namespace westonrobot;
 
-bool keep_run = true;
-
 std::unique_ptr<LiftActionServer> server;
 
 int main(int argc, char** argv) {
@@ -27,10 +25,10 @@ int main(int argc, char** argv) {
 
   ros::Rate rate(10);
   while (ros::ok()) {
+    server->PublishLiftState();
     ros::spinOnce();
     rate.sleep();
   }
 
-  //   ros::spin();
   return 0;
 }

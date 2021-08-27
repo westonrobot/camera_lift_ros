@@ -15,7 +15,8 @@
 
 #include <peripheral_camera_lift/LiftAction.h>
 #include <peripheral_camera_lift/LiftGoal.h>
-#include <peripheral_camera_lift/Lift.h>
+#include <peripheral_camera_lift/LiftSpeed.h>
+#include <peripheral_camera_lift/LiftState.h>
 
 #include "wrp_sdk/peripheral/camera_lift.hpp"
 
@@ -26,6 +27,7 @@ class LiftActionServer {
   ~LiftActionServer();
 
   bool Init(const std::string &port_name, int baud_rate = 115200);
+  void PublishLiftState();
 
  private:
   ros::NodeHandle *nh_;
@@ -42,6 +44,9 @@ class LiftActionServer {
   // speed control subscriber
   ros::Subscriber speed_control_subcriber_;
 
+  // state publisher
+  ros::Publisher state_publisher_;
+
   std::string port_name_;
   std::unique_ptr<CameraLift> lift_;
   bool speed_control_active_ = false;
@@ -50,7 +55,7 @@ class LiftActionServer {
 
   void ActionExecuteCallback(
       const peripheral_camera_lift::LiftGoalConstPtr &goal);
-  void SpeedControlCallback(const peripheral_camera_lift::Lift::ConstPtr &msg);
+  void SpeedControlCallback(const peripheral_camera_lift::LiftSpeed::ConstPtr &msg);
 };
 }  // namespace westonrobot
 

@@ -16,8 +16,9 @@ LiftActionServer::LiftActionServer(ros::NodeHandle *nh)
           boost::bind(&LiftActionServer::ActionExecuteCallback, this, _1),
           false),
       action_name_("LiftActionServer") {
-  speed_control_subcriber_ = nh_->subscribe<peripheral_camera_lift::Lift>(
+  speed_control_subcriber_ = nh_->subscribe<peripheral_camera_lift::LiftSpeed>(
       "/lift_speed", 5, &LiftActionServer::SpeedControlCallback, this);
+  state_publisher_ = nh_->advertise<peripheral_camera_lift::LiftState>("/lift_state", 10);
 }
 
 LiftActionServer::~LiftActionServer() { Shutdown(); }
@@ -30,6 +31,13 @@ bool LiftActionServer::Init(const std::string &port_name, int baud_rate) {
   as_.start();
 
   return lift_->Connect(port_name);
+}
+
+void LiftActionServer::PublishLiftState() { 
+  peripheral_camera_lift::LiftState lift_state;
+  lift_state.position = lift_->GetLiftState().position;
+  lift_state.speed = lift_->GetLiftState().speed;
+  state_publisher_.publish(lift_state);
 }
 
 void LiftActionServer::Shutdown() {
@@ -112,7 +120,7 @@ void LiftActionServer::ActionExecuteCallback(
 }
 
 void LiftActionServer::SpeedControlCallback(
-    const peripheral_camera_lift::Lift::ConstPtr &msg) {
+    const peripheral_camera_lift::LiftSpeed::ConstPtr &msg) {
   ROS_INFO("Received speed of %i", msg->speed);
   if (lift_->IsOkay()) {
     // set the action state to preempted
