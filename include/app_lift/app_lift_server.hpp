@@ -32,7 +32,6 @@ class LiftActionServer {
   ~LiftActionServer(void) {}
 
   void executeCB(const app_lift::LiftGoalConstPtr &goal) {
-    ros::Rate r(5);
     bool success = true;
 
     ROS_INFO(
@@ -58,8 +57,13 @@ class LiftActionServer {
           break;
       }
 
-      if (position > 100) position = 100;
-      while (position != lift_->GetLiftState().position) {
+      if (position > 100) {
+        position = 100;
+      } else if (position < 5) {
+        position = 0;
+      }
+      while ((position != lift_->GetLiftState().position) &&
+             !speed_control_active_) {
         // check that preempt has not been requested by the client
         if (as_.isPreemptRequested() || !ros::ok()) {
           ROS_INFO("%s: Preempted", action_name_.c_str());
@@ -75,17 +79,14 @@ class LiftActionServer {
 
         // publish the feedback
         as_.publishFeedback(feedback_);
-        // this sleep is not necessary, the sequence is computed at 1 Hz for
-        // demonstration purposes
-        r.sleep();
       }
-
       if (success) {
         result_.reached = true;
         ROS_INFO("%s: Succeeded", action_name_.c_str());
         // set the action state to succeeded
         as_.setSucceeded(result_);
       }
+      speed_control_active_ = false;
     } else {
       feedback_.lift_connected = false;
       as_.publishFeedback(feedback_);
@@ -95,12 +96,13 @@ class LiftActionServer {
   }
 
   void SpeedControlCallback(const app_lift::Lift::ConstPtr &msg) {
-    ROS_INFO("Received speed of %i:", msg->speed);
+    ROS_INFO("Received speed of %i", msg->speed);
     if (lift_->IsOkay()) {
-      ROS_INFO("%s: Preempted by speed control", action_name_.c_str());
       // set the action state to preempted
-      result_.reached = false;
-      as_.setAborted(result_);
+      if (as_.isActive()) {
+        ROS_INFO("%s: Preempted by speed control", action_name_.c_str());
+        speed_control_active_ = true;
+      }
       lift_->SendCommand(msg->speed);
     }
   }
@@ -119,6 +121,7 @@ class LiftActionServer {
  private:
   std::string port_name_;
   std::unique_ptr<CameraLift> lift_;
+  bool speed_control_active_ = false;
 };
 }  // namespace westonrobot
 
