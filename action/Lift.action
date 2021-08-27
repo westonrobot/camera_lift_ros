@@ -1,0 +1,14 @@
+#goal definition
+int8 ResetCmd = 0
+int8 PositionControlCmd = 1
+int8 type
+uint8 position
+int8 speed
+---
+#result definition
+bool reached
+---
+#feedback
+uint8 position
+int8 speed
+bool lift_connected
