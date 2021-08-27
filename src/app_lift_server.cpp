@@ -1,34 +1,36 @@
+#include <memory>
 #include <csignal>
-#include "app_lift/app_lift_server.hpp"
+
+#include "peripheral_camera_lift/lift_action_server.hpp"
 
 using namespace westonrobot;
 
 bool keep_run = true;
 
-void CloseLiftActionServer(int signal) { keep_run = false; }
+std::unique_ptr<LiftActionServer> server;
 
 int main(int argc, char** argv) {
   ros::init(argc, argv, "LiftActionServer");
 
-  std::signal(SIGINT, CloseLiftActionServer);
+  ros::NodeHandle nh;
 
   std::string port_name;
-  if (argc == 2) {
-    port_name = {argv[1]};
-    std::cout << "Specified port: " << port_name << std::endl;
-  } else {
-    std::cout << "Usage: app_lift_server <interface>" << std::endl
-              << "Example 1: ./lift_server /dev/ttyUSB0" << std::endl;
+  nh.param<std::string>("/lift_server/uart_port", port_name, "/dev/ttyUSB0");
+  server = std::make_unique<LiftActionServer>(&nh);
+
+  std::cout << "Specified uart port of the lift: " << port_name << std::endl;
+
+  if (!server->Init(port_name)) {
+    std::cout << "Failed to initialize lift" << std::endl;
     return -1;
   }
 
-  LiftActionServer LiftActionServer(port_name);
+  ros::Rate rate(10);
+  while (ros::ok()) {
+    ros::spinOnce();
+    rate.sleep();
+  }
 
-  // ros::Rate rate(10);
-  // while (keep_run) {
-  //   ros::spinOnce();
-  //   rate.sleep();
-  // }
-  ros::spin();
+  //   ros::spin();
   return 0;
 }

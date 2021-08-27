@@ -5,12 +5,12 @@
 ## Run server
 
 ```
-$ rosrun app_lift lift_server /dev/ttyUSB0
+$ roslaunch peripheral_camera_lift camera_lift.launch
 ```
 
 ## Pub speed control
 ```
-$ rostopic pub /lift_speed app_lift/Lift "speed:20"
+$ rostopic pub /lift_speed peripheral_camera_lift/Lift "speed:20"
 ```
 
 ## Pub goal
@@ -19,7 +19,7 @@ $ rostopic pub /lift_speed app_lift/Lift "speed:20"
 - type 1 for position
   
 ```
-rostopic pub /LiftActionServer/goal app_li/LiftActionGoal "header:
+rostopic pub /LiftActionServer/goal peripheral_camera_lift/LiftActionGoal "header:
   seq: 0
   stamp:
     secs: 0

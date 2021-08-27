@@ -1,0 +1,7 @@
+<launch>
+
+    <node name="lift_server" pkg="peripheral_camera_lift" type="lift_server" output="screen">
+        <param name="uart_port" value="/dev/ttyUSB0" />
+    </node>
+
+</launch>

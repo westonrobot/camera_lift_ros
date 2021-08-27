@@ -1,8 +1,8 @@
 #include <actionlib/client/simple_action_client.h>
 #include <actionlib/client/terminal_state.h>
-#include <app_lift/LiftAction.h>
-#include <app_lift/LiftGoal.h>
-#include <app_lift/Lift.h>
+#include <peripheral_camera_lift/LiftAction.h>
+#include <peripheral_camera_lift/LiftGoal.h>
+#include <peripheral_camera_lift/Lift.h>
 
 int main (int argc, char **argv)
 {
@@ -10,7 +10,7 @@ int main (int argc, char **argv)
 
   // create the action client
   // true causes the client to spin its own thread
-  actionlib::SimpleActionClient<app_lift::LiftAction> ac("LiftAction", true);
+  actionlib::SimpleActionClient<peripheral_camera_lift::LiftAction> ac("LiftAction", true);
 
   ROS_INFO("Waiting for action server to start.");
   // wait for the action server to start
@@ -18,8 +18,8 @@ int main (int argc, char **argv)
 
   ROS_INFO("Action server started, sending goal.");
   // send a goal to the action
-  app_lift::LiftGoal goal;
-  goal.type = app_lift::LiftGoal::PositionControlCmd;
+  peripheral_camera_lift::LiftGoal goal;
+  goal.type = peripheral_camera_lift::LiftGoal::PositionControlCmd;
   goal.position = 50;
   goal.speed = 50;
   ac.sendGoal(goal);
