@@ -8,12 +8,12 @@
 $ roslaunch peripheral_camera_lift camera_lift.launch
 ```
 
-## Pub speed control
+## Publish speed control
 ```
-$ rostopic pub /lift_speed peripheral_camera_lift/Lift "speed:20"
+$ rostopic pub /lift_speed peripheral_camera_lift/Lift "speed: 20"
 ```
 
-## Pub goal
+## Publish goal
 
 - type 0 for reset
 - type 1 for position
@@ -35,4 +35,10 @@ goal:
   position: 100
   speed: 30" 
 
+```
+
+## Subscribe to lift state
+
+```
+$ rostopic echo /lift_state
 ```
