@@ -2,7 +2,6 @@
 #include <actionlib/client/terminal_state.h>
 #include <peripheral_camera_lift/LiftAction.h>
 #include <peripheral_camera_lift/LiftGoal.h>
-#include <peripheral_camera_lift/Lift.h>
 
 int main (int argc, char **argv)
 {
@@ -10,7 +9,7 @@ int main (int argc, char **argv)
 
   // create the action client
   // true causes the client to spin its own thread
-  actionlib::SimpleActionClient<peripheral_camera_lift::LiftAction> ac("LiftAction", true);
+  actionlib::SimpleActionClient<peripheral_camera_lift::LiftAction> ac("LiftActionServer", true);
 
   ROS_INFO("Waiting for action server to start.");
   // wait for the action server to start
