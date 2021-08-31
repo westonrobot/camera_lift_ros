@@ -141,6 +141,9 @@ include_directories(
 add_executable(lift_server src/app_lift_server.cpp src/lift_action_server.cpp)
 add_executable(lift_client src/app_lift_client.cpp)
 
+add_dependencies(lift_server ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(lift_client ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
