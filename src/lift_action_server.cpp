@@ -26,7 +26,8 @@ LiftActionServer::~LiftActionServer() { Shutdown(); }
 bool LiftActionServer::Init(const std::string &port_name, int baud_rate) {
   // Lift setup
   lift_ = std::make_unique<CameraLift>();
-
+  lift_->Connect(port_name);
+  lift_->Disconnect();
   // Action server
   as_.start();
 
