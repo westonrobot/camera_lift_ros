@@ -48,10 +48,12 @@ goal_id:
 goal:
   type: 1
   position: 100
-  speed: 30" 
+  speed: 50" 
 ```
 
 * Publish speed control from command line
 ```
-$ rostopic pub /lift_speed peripheral_camera_lift/Lift "speed: 20"
+$ rostopic pub /lift_speed peripheral_camera_lift/Lift "speed: 50"
 ```
+
+**Note** The lift won't move if the set speed is too low. The payload may affect the minimum speed.
